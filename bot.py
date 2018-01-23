@@ -46,7 +46,8 @@ class Bot:
     def __init__(self):
         self.QR = QR_Controller(self, bot)
 
-    # Main request handling when user write to the bot
+    ''' Main request handling when user write to the bot
+    '''
     def receive_message(self):
         if request.method == 'GET':
             """Before allowing people to message your bot, Facebook has implemented a verify token
@@ -91,8 +92,10 @@ class Bot:
                                         self.QR.send_quick_replies(response_sent_nontext, self.get_started_types)
 
         return "Message Processed"
-    # END
+    
 
+    ''' Verifies the Facebook token
+    '''
     def verify_fb_token(self, token_sent):
         #take token sent by facebook and verify it matches the verify token you sent
         #if they match, allow the request, else return an error
@@ -101,7 +104,8 @@ class Bot:
         return 'Invalid verification token'
 
 
-    #chooses a random message to send to the user
+    '''chooses a random message to send to the user
+    '''
     def get_message(self):
         sample_responses = ["Welcome to MontrealGo Alpha " + emoji.emojize(':grinning:', use_aliases=True), emoji.emojize(':thumbsup:', use_aliases=True), "Hi! " + emoji.emojize(':blush:', use_aliases=True)]
         
@@ -109,13 +113,15 @@ class Bot:
         return random.choice(sample_responses)
 
 
-    #uses PyMessenger to send response to user
+    '''uses PyMessenger to send response to user
+    '''
     def send_message(self, recipient_id, response):
         #sends user the text message provided via input response parameter
         bot.send_text_message(recipient_id, response)
         return "success"
 
-    # Triggers the proper data message Type
+    ''' Triggers the proper data message Type
+    '''
     def responseGenerator(self):
         messageType = self.userType
         if messageType is "GET_STARTED":

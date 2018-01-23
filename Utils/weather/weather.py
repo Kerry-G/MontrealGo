@@ -29,7 +29,7 @@ def receiveWeatherFromLatLon(lat,lon):
         encoding = fp.info().get_content_charset('utf-8')
         my_json = json.loads(mybytes.decode(encoding))
     except:
-        return "Oops, I don't know that country, can you try again?"
+        return "Oops, I don't know that city, can you try again?"
     return toString(my_json)
 
 def toString(my_json):

@@ -2,12 +2,10 @@ import json
 
 class QR_Controller():
 
-    botController = ""
-    bot = ""
+    botController = None
 
-    def __init__(self, botController, bot):
+    def __init__(self, botController):
         self.botController = botController
-        self.bot = bot
 
     ## IMPORTANT NOTES
     #
