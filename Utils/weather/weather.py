@@ -1,4 +1,4 @@
-import urllib
+from urllib.request import urlopen
 import json
 import math 
 import sys
@@ -10,7 +10,7 @@ from config import weatherAPI, APPID
 def receiveWeather(city):
     fp = None
     try:
-        fp = urllib.request.urlopen(weatherAPI + "?q=" + city + "&units=metric" + APPID)
+        fp = urlopen(weatherAPI + "?q=" + city + "&units=metric" + APPID)
         mybytes = fp.read()
         encoding = fp.info().get_content_charset('utf-8')
         my_json = json.loads(mybytes.decode(encoding))
@@ -24,7 +24,7 @@ def receiveWeather(city):
 def receiveWeatherFromLatLon(lat,lon):
     fp = None
     try:
-        fp = urllib.request.urlopen(weatherAPI + "?lat=" + str(lat) +"&lon=" + str(lon) + "&units=metric" + APPID)
+        fp = urlopen(weatherAPI + "?lat=" + str(lat) +"&lon=" + str(lon) + "&units=metric" + APPID)
         mybytes = fp.read()
         encoding = fp.info().get_content_charset('utf-8')
         my_json = json.loads(mybytes.decode(encoding))
