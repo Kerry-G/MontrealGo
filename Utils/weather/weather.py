@@ -12,8 +12,10 @@ def receiveWeather(city):
     except:
         return "Oops, I don't know that country, can you try again?"
     mybytes = fp.read()
-    my_json = json.loads(mybytes)
+    encoding = fp.info().get_content_charset('utf-8')
+    my_json = json.loads(mybytes.decode(encoding))
     return toString(my_json)
+
 
 #give a lattitude and a longitude, return a dict with all the info
 def receiveWeatherFromLatLon(lat,lon):
@@ -23,7 +25,8 @@ def receiveWeatherFromLatLon(lat,lon):
     except:
         return "Oops, I don't know that country, can you try again?"
     mybytes = fp.read()
-    my_json = json.loads(mybytes)
+    encoding = fp.info().get_content_charset('utf-8')
+    my_json = json.loads(mybytes.decode(encoding))
     return toString(my_json)
 
 def toString(my_json):
