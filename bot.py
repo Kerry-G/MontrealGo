@@ -18,19 +18,36 @@ class Bot:
     params = ['', '']
     QR = None
     location = False
+    get_started_types = [
+            {'buttontitle': 'Local News', 'payload': 'NOUVELLES'},
+            {'buttontitle': 'Photo of Montreal', 'payload': 'PHOTOS'},
+            {'buttontitle': 'City Weather', 'payload': 'WEATHER'},
+            {'buttontitle': 'Historical Info', 'payload': 'HISTORICAL'},
+            {'buttontitle': 'Where is?', 'payload': 'WHERE_IS'}
+    ]
+
+    city_types = [
+            {'buttontitle': 'Montreal', 'payload': 'MONTREAL'},
+            {'buttontitle': 'Toronto', 'payload': 'TORONTO'},
+            {'buttontitle': 'Ottawa', 'payload': 'OTTAWA'},
+            {'buttontitle': 'Quebec', 'payload': 'QUEBEC'},
+            {'buttontitle': 'Vancouver', 'payload': 'VANCOUVER'},
+            {'content_type': 'location' } 
+    ]
+
+
+    where_is_types = [
+            {'buttontitle': 'Mont-Royal', 'payload': 'NOUVELLES'},
+            {'buttontitle': 'Vieux-Port', 'payload': 'PHOTOS'},
+            {'buttontitle': 'Parc Jean Drapeau', 'payload': 'WEATHER'},
+            {'buttontitle': 'Botanical Garden', 'payload': 'HISTORICAL'}
+    ]
 
     def __init__(self):
         self.QR = QR_Controller(self, bot)
 
     # Main request handling when user write to the bot
     def receive_message(self):
-        get_started_types = [
-            {'buttontitle': 'Local News', 'payload': 'NOUVELLES'},
-            {'buttontitle': 'Photo of Montreal', 'payload': 'PHOTOS'},
-            {'buttontitle': 'City Weather', 'payload': 'WEATHER'},
-            {'buttontitle': 'Historical Info', 'payload': 'HISTORICAL'},
-            {'buttontitle': 'Where is?', 'payload': 'WHERE_IS'}
-        ]
         if request.method == 'GET':
             """Before allowing people to message your bot, Facebook has implemented a verify token
             that confirms all requests that your bot receives came from Facebook."""
@@ -68,10 +85,10 @@ class Bot:
                                     if message['message'].get('attachments')[0].get('payload').get('coordinates'):
                                         lat = message['message'].get('attachments')[0].get('payload').get('coordinates').get('lat')
                                         lon = message['message'].get('attachments')[0].get('payload').get('coordinates').get('long')
-                                        self.QR.send_quick_replies(receiveWeatherFromLatLon(lat, lon), get_started_types)
+                                        self.QR.send_quick_replies(receiveWeatherFromLatLon(lat, lon), self.get_started_types)
                                     else:
                                         response_sent_nontext = self.get_message()
-                                        self.QR.send_quick_replies(response_sent_nontext, get_started_types)
+                                        self.QR.send_quick_replies(response_sent_nontext, self.get_started_types)
 
         return "Message Processed"
     # END
@@ -101,32 +118,8 @@ class Bot:
     # Triggers the proper data message Type
     def responseGenerator(self):
         messageType = self.userType
-        get_started_types = [
-            {'buttontitle': 'Local News', 'payload': 'NOUVELLES'},
-            {'buttontitle': 'Photo of Montreal', 'payload': 'PHOTOS'},
-            {'buttontitle': 'City Weather', 'payload': 'WEATHER'},
-            {'buttontitle': 'Historical Info', 'payload': 'HISTORICAL'},
-            {'buttontitle': 'Where is?', 'payload': 'WHERE_IS'}
-        ]
-
-        city_types = [
-            {'buttontitle': 'Montreal', 'payload': 'MONTREAL'},
-            {'buttontitle': 'Toronto', 'payload': 'TORONTO'},
-            {'buttontitle': 'Ottawa', 'payload': 'OTTAWA'},
-            {'buttontitle': 'Quebec', 'payload': 'QUEBEC'},
-            {'buttontitle': 'Vancouver', 'payload': 'VANCOUVER'},
-            {'content_type': 'location' } 
-        ]
-
-
-        where_is_types = [
-            {'buttontitle': 'Mont-Royal', 'payload': 'NOUVELLES'},
-            {'buttontitle': 'Vieux-Port', 'payload': 'PHOTOS'},
-            {'buttontitle': 'Parc Jean Drapeau', 'payload': 'WEATHER'},
-            {'buttontitle': 'Botanical Garden', 'payload': 'HISTORICAL'}
-        ]
         if messageType is "GET_STARTED":
-            self.QR.send_quick_replies(answerSelector(messageType), get_started_types)
+            self.QR.send_quick_replies(self.answerSelector(messageType), self.get_started_types)
         elif messageType is "NOUVELLES":
             news = getNews()
 
@@ -134,31 +127,26 @@ class Bot:
             element = {"title": news['title'], "subtitle": "MessengerGo",  "item_url": news['url'] }
             elements.append(element)
             bot.send_generic_message(self.recipient_id, elements)
-            # self.send_message(self.recipient_id, answerSelector(messageType) + " " + news['title'])
-            self.QR.send_quick_replies("What else would you like to do?", get_started_types)
+            self.QR.send_quick_replies("What else would you like to do?", self.get_started_types)
         elif messageType is "PHOTOS":
             image = getImage()
-            # elements = []
-            # element = {"title": image['title'], "image_url":image['url'] }
-            # elements.append(element)
-            # bot.send_generic_message(self.recipient_id, elements)
             bot.send_image_url(self.recipient_id, image['url'])
-            self.QR.send_quick_replies(answerSelector(messageType) + "by /u/" + str(image['author']), get_started_types)
+            self.QR.send_quick_replies(self.answerSelector(messageType) + "by /u/" + str(image['author']), self.get_started_types)
         elif messageType is "STM":
             pass
         elif messageType is "WEATHER":
             answerSelector(messageType)
             self.send_message(self.recipient_id,receiveWeather(self.params[0]))
-            self.QR.send_quick_replies("Would you like the weather for another city?", city_types)
+            self.QR.send_quick_replies("Would you like the weather for another city?", self.city_types)
         elif messageType is "HISTORICAL":
             historical = getHistorical()
             self.send_message(self.recipient_id, answerSelector(messageType))
-            self.QR.send_quick_replies(historical['title'] + ' ' + historical['url'], get_started_types)
+            self.QR.send_quick_replies(historical['title'] + ' ' + historical['url'], self.get_started_types)
         elif messageType is "ERROR":
             self.send_message(self.recipient_id, emoji.emojize(':laughing:', use_aliases=True) + " " + answerSelector(messageType) )
-            self.QR.send_quick_replies("Here is what I can help you with.", get_started_types)
+            self.QR.send_quick_replies("Here is what I can help you with.", self.get_started_types)
         elif messageType is "WHERE_IS_FIRST":
-            self.QR.send_quick_replies("Where would you like to go?", where_is_types)
+            self.QR.send_quick_replies("Where would you like to go?", self.where_is_types)
         elif messageType is "WHERE_IS":
             where_is_urls = {'Mont-Royal': 'https://goo.gl/maps/cUYD8V6wvo42',
             'Vieux-Port': 'https://goo.gl/maps/xtYmjghFsqn',
@@ -169,9 +157,9 @@ class Bot:
             elements.append(element)
             bot.send_generic_message(self.recipient_id, elements)
             self.send_message(self.recipient_id, "I hope you have fun there!")
-            self.QR.send_quick_replies("What else can I do for you?", get_started_types)
+            self.QR.send_quick_replies("What else can I do for you?", self.get_started_types)
         else:
-            self.send_message(self.recipient_id, 'IDK')
+            self.send_message(self.recipient_id, ':)')
 
     def figureOutType(self, a):
         if self.iequal(a,"get started") or self.iequal(a,"hey") or self.iequal(a,"hi") or self.iequal(a,"salut") or self.iequal(a,"bonjour"):
@@ -243,24 +231,24 @@ class Bot:
             return x[2]
 
 
-def answerSelector(userValue):
-    if(userValue == "GET_STARTED"): 
-        selectable = ['Hi, I am MontrealGo! What can I help you with', 'Hey, I am MontrealGo! Is there something you need help with?']
-        return selectable[random.randrange(0,len(selectable),1)]
+    def answerSelector(userValue):
+        if(userValue == "GET_STARTED"): 
+            selectable = ['Hi, I am MontrealGo! What can I help you with', 'Hey, I am MontrealGo! Is there something you need help with?']
+            return selectable[random.randrange(0,len(selectable),1)]
 
-    elif(userValue == "NOUVELLES"): 
-        selectable = ['Here\'s some local Montreal news. ', 'Stay updated with local montreal news.']
-        return selectable[random.randrange(0,len(selectable),1)]
+        elif(userValue == "NOUVELLES"): 
+            selectable = ['Here\'s some local Montreal news. ', 'Stay updated with local montreal news.']
+            return selectable[random.randrange(0,len(selectable),1)]
 
-    elif(userValue == "PHOTOS"):
-        selectable2 = ['Enjoy the following Montreal image by ', 'Here is a photo of Montreal by ']
-        return selectable2[random.randrange(0,len(selectable2),1)]
-    
+        elif(userValue == "PHOTOS"):
+            selectable2 = ['Enjoy the following Montreal image by ', 'Here is a photo of Montreal by ']
+            return selectable2[random.randrange(0,len(selectable2),1)]
+        
 
-    elif(userValue == "HISTORICAL"):
-        selectable3 = ['Montreal is a very historical place. Here is some information about it.', 'Montreal has a very rich history, here is part of it']
-        return selectable3[random.randrange(0,len(selectable3),1)]
-    
-    else:
-        selectable4 = ['I did not understand that command.', 'Sorry try again my friend, this did not compute.', "Oops, I could not understand that."]
-        return selectable4[random.randrange(0,len(selectable4),1)]
+        elif(userValue == "HISTORICAL"):
+            selectable3 = ['Montreal is a very historical place. Here is some information about it.', 'Montreal has a very rich history, here is part of it']
+            return selectable3[random.randrange(0,len(selectable3),1)]
+        
+        else:
+            selectable4 = ['I did not understand that command.', 'Sorry try again my friend, this did not compute.', "Oops, I could not understand that."]
+            return selectable4[random.randrange(0,len(selectable4),1)]

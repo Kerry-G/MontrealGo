@@ -1,4 +1,3 @@
-from flask import Flask, request
 import urllib
 import json
 import math 
@@ -15,6 +14,8 @@ def receiveWeather(city):
     my_json = json.loads(mybytes)
     return toString(my_json)
 
+
+print(receiveWeather('Montreal'))
 #give a lattitude and a longitude, return a dict with all the info
 def receiveWeatherFromLatLon(lat,lon):
     fp = None
