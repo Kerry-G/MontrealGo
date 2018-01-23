@@ -230,7 +230,7 @@ class Bot:
             return x[2]
 
 
-    def answerSelector(userValue):
+    def answerSelector(self,userValue):
         if(userValue == "GET_STARTED"): 
             selectable = ['Hi, I am MontrealGo! What can I help you with', 'Hey, I am MontrealGo! Is there something you need help with?']
             return selectable[random.randrange(0,len(selectable),1)]
