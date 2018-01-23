@@ -135,7 +135,6 @@ class Bot:
         elif messageType is "STM":
             pass
         elif messageType is "WEATHER":
-            answerSelector(messageType)
             self.send_message(self.recipient_id,receiveWeather(self.params[0]))
             self.QR.send_quick_replies("Would you like the weather for another city?", self.city_types)
         elif messageType is "HISTORICAL":
