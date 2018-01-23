@@ -44,7 +44,7 @@ class Bot_Controller:
     ]
 
     def __init__(self):
-        self.QR = QR_Controller(self, bot)
+        self.QR = QR_Controller(self)
 
     ''' Main request handling when user write to the bot
     '''
