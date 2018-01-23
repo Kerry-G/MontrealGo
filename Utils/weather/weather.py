@@ -2,7 +2,10 @@ from flask import Flask, request
 import urllib
 import json
 import math 
+import sys
+sys.path.append('../..')
 from config import weatherAPI, APPID
+# from  import weatherAPI, APPID
 
 #give a city, return a dict with all the info
 def receiveWeather(city):
@@ -44,3 +47,4 @@ def toString(my_json):
               + str(ans["humidity"]) + "%. The wind speed is " + str(ans["wind"]) +" m/s."
     return ans_str
 
+print(receiveWeather("montreal"))
