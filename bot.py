@@ -139,10 +139,10 @@ class Bot:
             self.QR.send_quick_replies("Would you like the weather for another city?", self.city_types)
         elif messageType is "HISTORICAL":
             historical = getHistorical()
-            self.send_message(self.recipient_id, answerSelector(messageType))
+            self.send_message(self.recipient_id, self.answerSelector(messageType))
             self.QR.send_quick_replies(historical['title'] + ' ' + historical['url'], self.get_started_types)
         elif messageType is "ERROR":
-            self.send_message(self.recipient_id, emoji.emojize(':laughing:', use_aliases=True) + " " + answerSelector(messageType) )
+            self.send_message(self.recipient_id, emoji.emojize(':laughing:', use_aliases=True) + " " + self.answerSelector(messageType) )
             self.QR.send_quick_replies("Here is what I can help you with.", self.get_started_types)
         elif messageType is "WHERE_IS_FIRST":
             self.QR.send_quick_replies("Where would you like to go?", self.where_is_types)
