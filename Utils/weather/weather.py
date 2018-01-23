@@ -19,7 +19,7 @@ def receiveWeather(city):
     return toString(my_json)
 
 
-print(receiveWeather('Montreal'))
+
 #give a lattitude and a longitude, return a dict with all the info
 def receiveWeatherFromLatLon(lat,lon):
     fp = None
@@ -47,4 +47,3 @@ def toString(my_json):
               + str(ans["humidity"]) + "%. The wind speed is " + str(ans["wind"]) +" m/s."
     return ans_str
 
-print(receiveWeather("montreal"))
