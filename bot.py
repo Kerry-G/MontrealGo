@@ -11,7 +11,7 @@ import emoji
 # Variables
 bot = Bot(ACCESS_TOKEN)
 
-class Bot:
+class Bot_Controller:
 
     recipient_id = ""
     userType = "PHOTOS"
@@ -58,7 +58,7 @@ class Bot:
         else:
         # get whatever message a user sent the bot
             output = request.get_json()
-
+            print(output)
             for event in output['entry']:
 
                 if "standby" in event:
